@@ -9,7 +9,7 @@ This repository contains the following elements:
 
 - **2_format_and_preprocess_TCGA.R**: R script to read in the data downloaded from previous script, and perform pre-processing steps (match up 'omics data for each patient, select only Caucasian tumor samples, select most variable probes annotated with 1500bp of each gene's TSS, perform sparse principal component analysis on miRNA-seq data and expression data for TF's identifitied in IPA and TRRUST databases, fit initial per-gene model on RNA-seq data to regress out the first 5 principal components). Residuals from the pre-processing regression are saved in an .RData object in cancer-specific subdirectories.
 
-- **3_GCTA_analysis_TCGA**: [to be added]
+- **3_GCTA_analysis_TCGA.R**: R script to fit a linear mixed model to standardized residuals from previous step using GCTA.
 
 - **4_export_results_TCGA.R**: R script to read in results of previous analyses, calculate variance components for fixed effects, and export data for use in the Shiny app.
 
