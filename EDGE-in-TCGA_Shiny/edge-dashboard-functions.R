@@ -178,7 +178,7 @@ my_zoom <- function(gene_selection, cancer_selection, values, type="TF", horiz=F
 #---------------------------------------------------------------------------------------------
 my_complexheatmap <- function(all_values, ind = NULL, 
                               molsource_choice = c("mut", "cna", "methyl", "mirna", "TF", "genetic"),
-                              top200 = FALSE, rn=FALSE) {
+                              top200 = FALSE, rn=FALSE, top200_data=NULL) {
   
   if(top200 == FALSE) {
     ## Start with mutation
@@ -201,46 +201,34 @@ my_complexheatmap <- function(all_values, ind = NULL,
     }
   }
   if(top200 == TRUE) {
-    ## Start with mutation
-    heatmap_temp <- all_values[, c("gene", "cancer", molsource_choice[1]), with=FALSE] %>%
-      mutate(cancer = as.factor(cancer)) %>%
-      spread("cancer", molsource_choice[1])
-    rs <- apply(heatmap_temp[,-1], 1, max, na.rm=TRUE)
-    o <- order(rs, decreasing=TRUE, na.last=TRUE)
-    heatmap_temp <- heatmap_temp[o,]
-    heatmap_temp <- heatmap_temp[seq_len(200),] 
-    heatmap_temp$source <- molsource_choice[1]
-    heatmap_dat <- heatmap_temp
-    ## Add in other sources
-    if(length(molsource_choice) > 1) {
-      for(i in molsource_choice[-1]) {
-        heatmap_temp <- all_values[, c("gene", "cancer", i), with=FALSE] %>%
-          mutate(cancer = as.factor(cancer)) %>%
-          spread("cancer", i)
-        rs <- apply(heatmap_temp[,-1], 1, max, na.rm=TRUE)
-        o <- order(rs, decreasing=TRUE, na.last=TRUE)
-        heatmap_temp <- heatmap_temp[o,]
-        heatmap_temp <- heatmap_temp[seq_len(200),] 
-        heatmap_temp$source <- i
-        heatmap_dat <- rbind(heatmap_dat, heatmap_temp)
-      }
-    }
-    
+  
+    # heatmap_temp1 <- all_values %>% 
+    #   dplyr::select(-chr, -strand, -tss, -residual) %>%
+    #   gather(key=source, value=value, -gene, -cancer) 
+    # choose_genes <- heatmap_temp1 %>%
+    #   group_by(source, gene) %>%
+    #   summarize(max_value = max(value, na.rm=TRUE)) %>%
+    #   top_n(200) %>%
+    #   ungroup() %>%
+    #   dplyr::select(-max_value)
+    # heatmap_dat <- left_join(choose_genes, heatmap_temp1, by=c("gene", "source")) %>%
+    #   spread(key = cancer, value=value) %>%
+    #   dplyr::select(gene, 3:19, source)
+    # saveRDS(heatmap_dat, "dashboard_data/top200.rds")
+  
+    heatmap_dat <- top200_data %>%
+      filter(source %in% molsource_choice)
   }
 
   heatmap_dat_orig <- heatmap_dat
   ## Replace NA's with -1 for now
-  heatmap_dat[is.na(heatmap_dat)] <- -1
+  heatmap_dat[is.na(heatmap_dat)] <- -0.1
   ## Now do heatmap
-#  tmp <- heatmap_dat[,-c(1,ncol(heatmap_dat))]
-#  index <- which(rowSums(is.na(tmp)) < ncol(tmp))
   h <- Heatmap(heatmap_dat[,-c(1,ncol(heatmap_dat))], split=heatmap_dat$source, 
-               name="Value",
-               col = colorRamp2(c(-1,seq(0,1,by=0.05)), c("grey", magma(21, begin=1, end=0))),
-   #           col = c("grey", "grey", magma(20, begin=1, end=0)),
-  #             na_col="white",
+               name="Variance\ncomponent",
+               col = colorRamp2(c(-0.1,0,seq(0.05,1,by=0.05)), c("grey", "white", magma(20, begin=1, end=0))),
               gap = unit(3, "mm"), show_row_names=FALSE,
-               heatmap_legend_param = list(at = c(-1, seq(0,1,by=0.1)),
+               heatmap_legend_param = list(at = c(-0.1, seq(0,1,by=0.1)),
                                              labels=c("none", as.character(seq(0,1,by=0.1)))))
   if(rn ==TRUE) {
       ha <- rowAnnotation(gene = row_anno_text(heatmap_dat$gene,
@@ -250,6 +238,48 @@ my_complexheatmap <- function(all_values, ind = NULL,
   }
   return(h)
 }
+
+
+#---------------------------------------------------------------------------------------------
+my_newpheatmap <- function(gene_selection, cancer_selection, all_values, cancerabbrev, main="", rn=TRUE) {
+  if(length(gene_selection) == 1) {
+    sel <- all_values[gene %in% gene_selection & cancer %in% cancer_selection,
+                      .(cancer, mut, cna, mirna, TF, methyl, genetic, residual)]
+    sel <- as.data.frame(sel)
+    rownames(sel) <- cancerabbrev$V2[match(sel$cancer, cancerabbrev$V1)]
+    pve_values <- as.matrix(sel[,-1])
+  }
+  if(length(gene_selection) > 1) {
+    sel <- all_values[gene %in% gene_selection & cancer %in% cancer_selection,
+                      .(gene, mut, cna, mirna, TF, methyl, genetic, residual)]
+    sel <- as.data.frame(sel)
+    rownames(sel) <- sel$gene
+    pve_values <- as.matrix(sel[,-1])
+  }
+  pve_values[is.na(pve_values)] <- -0.1
+  colnames(pve_values) <- c("mutations", "copy number\nalterations", "miRNAs", "transcription\nfactors", "promoter\nmethylation",
+                            "genetic", "residual")
+  
+    ## Replace NA's with -1 for now
+    pve_values[is.na(pve_values)] <- -0.1
+    ## Now do heatmap
+    h <- Heatmap(pve_values,
+                 name="Variance\ncomponent",
+                 col = colorRamp2(c(-0.1,0,seq(0.05,1,by=0.05)), c("grey", "white", magma(20, begin=1, end=0))),
+                 #           col = c("grey", "grey", magma(20, begin=1, end=0)),
+                 #             na_col="white",
+                 gap = unit(3, "mm"), show_row_names=FALSE,
+                 heatmap_legend_param = list(at = c(-0.1, seq(0,1,by=0.1)),
+                                             labels=c("none", as.character(seq(0,1,by=0.1)))))
+    if(rn) {
+      ha <- rowAnnotation(gene = row_anno_text(rownames(pve_values),
+                                               offset = unit(0, "npc"),
+                                               just="left"), width = max_text_width(rownames(pve_values)))
+      h <- h + ha 
+    }
+      draw(h, heatmap_legend_side = "left")
+}
+
 
 
 
