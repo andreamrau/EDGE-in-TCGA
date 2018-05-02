@@ -98,7 +98,7 @@ font-family: Helvetica;
 
 
 ### Exploring drivers of gene expression in TCGA cancer genomes (EDGE in TCGA)
-Andrea Rau, Michael Flister, Hallgeir Rui, and Paul L. Auer
+Andrea Rau, Michael Flister, Hallgeir Rui, and Paul Auer
 
 
 <div style="width:450px; height=300px">
@@ -142,7 +142,7 @@ No, login and/or registration are not required. EDGE in TCGA is open-access.
 
 **5. Who should I contact if I have questions about EDGE in TCGA?**
 
-Please contact [Dr. Andrea Rau](http://www.andrea-rau.com) (andrea.rau@inra.fr) or [Dr. Paul Livermore Auer](http://people.uwm.edu/pauer)  (pauer@uwm.edu) if you have questions or experience any technical difficulties with the app.
+Please contact [Dr. Andrea Rau](http://www.andrea-rau.com) (andrea.rau@inra.fr) or [Dr. Paul Auer](http://people.uwm.edu/pauer)  (pauer@uwm.edu) if you have questions or experience any technical difficulties with the app.
 
 
 
