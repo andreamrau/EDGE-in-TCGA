@@ -20,6 +20,7 @@ resource_files:
 - dashboard_data/corlist_July27.rds
 - dashboard_data/cancerabbrev.rds
 - dashboard_data/refGene_keep.txt
+- dashboard_data/top200.rds
 - edge-dashboard-functions.R
 runtime: shiny
 output:
