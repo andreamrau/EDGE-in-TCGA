@@ -12,7 +12,7 @@ resource_files:
 - dashboard_data/nmol.rds
 - dashboard_data/oncosig.rds
 - dashboard_data/pathways.rds
-- dashboard_data/varComp_standardized_July27.rds
+- dashboard_data/varComp_standardized_July27_nomeanvalues.rds
 - dashboard_data/tf_spca_standardized_July27.rds
 - dashboard_data/mirna_spca_standardized_July27.rds
 - dashboard_data/tf_spca_key_standardized_July27.rds
