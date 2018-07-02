@@ -93,8 +93,19 @@ my_pheatmap <- function(gene_selection, cancer_selection, all_values, cancerabbr
 
 #---------------------------------------------------------------------------------------------
 my_zoom <- function(gene_selection, cancer_selection, values, type="TF", horiz=FALSE) {
-
-  sel <- values[gene == gene_selection & cancer %in% cancer_selection]
+  if(values == "TF_values") {
+    sqldb <- dbConnect(SQLite(), dbname = "dashboard_data/TF_values.sqlite")
+    sel <- dbGetQuery(sqldb, paste0("select * from TF_values where gene ='", gene_selection, "' and cancer IN ",
+                                    paste0("(", paste0("'", cancer_selection, "'", collapse=","), ")", collapse = "")))
+    dbDisconnect(sqldb) ## Disconnect when done 
+  }
+  if(values == "mir_values") {
+    sqldb <- dbConnect(SQLite(), dbname = "dashboard_data/mir_values.sqlite")
+    sel <- dbGetQuery(sqldb, paste0("select * from mir_values where gene ='", gene_selection, "' and cancer IN ",
+                                    paste0("(", paste0("'", cancer_selection, "'", collapse=","), ")", collapse = "")))
+    dbDisconnect(sqldb) ## Disconnect when done 
+  }
+#  sel <- values[gene == gene_selection & cancer %in% cancer_selection]
 
   sel_list <- setNames(split(sel, seq(nrow(sel))), sel$cancer)
   sel_list <- lapply(sel_list, function(x) {
