@@ -1,5 +1,7 @@
 # EDGE-in-TCGA
-Source code to reproduce results from ["Exploring Drivers of Gene Expression in The Cancer Genome Atlas"](https://www.biorxiv.org/content/early/2017/12/02/227926) by Rau et al. (2017)
+Source code to reproduce results from ["Exploring Drivers of Gene Expression in The Cancer Genome Atlas"](https://academic.oup.com/bioinformatics/article/35/1/62/5047764) by Rau et al. (2018)
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3524080.svg)](https://doi.org/10.5281/zenodo.3524080)
 
 This repository contains the following elements:
 
@@ -19,6 +21,6 @@ All of the R scripts above were run on a Slurm scheduler using the Rscript comma
 
 If you use these scripts and/or our Shiny app in your research, please cite our paper:
 
-Rau, A., Flister, M. J., Rui, H. and Livermore Auer, P. (2017) Exploring drivers of gene expression in The Cancer Genome Atlas. [bioRxiv](https://www.biorxiv.org/content/early/2017/12/02/227926), doi: https://doi.org/10.1101/227926.
+Rau, A., Flister, M. J., Rui, H. and Livermore Auer, P. (2018) Exploring drivers of gene expression in The Cancer Genome Atlas. [Bioinformatics](https://academic.oup.com/bioinformatics/article/35/1/62/5047764): 35(1), 62-68. doi: https://doi.org/10.1093/bioinformatics/bty551.
 
 This code, and the associated Shiny app, are distributed under the GNU public license (GPL-3).
